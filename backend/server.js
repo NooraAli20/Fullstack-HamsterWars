@@ -20,7 +20,7 @@ app.use('/hamsters', HamsterRouter);
 app.use('/matches', MatchesRouter);
 app.use('/', AllRouter)
 
-const PORT = parseInt(process.env.PORT) || 3001
+const PORT = parseInt(process.env.PORT) || 4000
 app.listen(PORT, () => {
     console.log('App is listening on port '+ PORT);
 });
