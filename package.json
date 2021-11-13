@@ -43,7 +43,7 @@
     "web-vitals": "^1.1.2"
   },    "heroku-postbuild": "cd client && npm install && npm run build",
   "scripts": {
-    "start": "nodemon backend/server.js",
+    "start": "node backend/server.js",
     "build": "react-scripts build",
     "client": "npm start --prefix client",
     "dev": "concurrently \"npm run server\" \"npm run start\"",
