@@ -31,6 +31,7 @@
     "moment": "^2.29.1",
     "mui-image": "^0.1.3",
     "nodemon": "^2.0.15",
+    "path": "^0.12.7",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-images-uploading": "^3.1.3",
@@ -42,12 +43,11 @@
     "web-vitals": "^1.1.2"
   },
   "scripts": {
-    "start": "react-scripts --prefix client",
-    "server": "nodemon backend/server.js",
+    "start": "nodemon backend/server.js",
     "build": "react-scripts build",
     "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run start\"", 
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix start && npm run build --prefix client",
+    "dev": "concurrently \"npm run server\" \"npm run start\"",
+    "heroku-postbuild": "cd client && npm install && npm run build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
