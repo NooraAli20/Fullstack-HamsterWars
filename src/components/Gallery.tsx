@@ -169,7 +169,7 @@ const Gallery : React.FC = () => {
                         {
                             allHamsters.map((hamster) => (
                                 <ImageListItem key={hamster.id}>
-                                    <img src={`../img/${hamster.imgName}`} />
+                                    <img src={`../img/${hamster.imgName}`} alt={hamster.imgName} />
                                     <ImageListItemBar
                                         title={hamster.name}
                                         subtitle={hamster.wins}

@@ -19,7 +19,7 @@ const Kontainer : React.FC = () => {
         dispatch(fetchLosers())
         dispatch(fetchRandomHamster())
 
-    }, [])
+    }, [dispatch])
 
     return (
         <Container maxWidth="md">

@@ -21,7 +21,7 @@ const Stats : React.FC  = () => {
                         {
                             winners.map((hamster) => (
                                 <ImageListItem key={hamster.imgName}>
-                                    <img src={`../img/${hamster.imgName}`} />
+                                    <img src={`../img/${hamster.imgName}`} alt={hamster.imgName} />
                                     <ImageListItemBar
                                         title={hamster.name}
                                         subtitle={hamster.wins}
@@ -41,7 +41,7 @@ const Stats : React.FC  = () => {
                         {
                             losers.map((hamster) => (
                                 <ImageListItem key={hamster.imgName}>
-                                    <img src={`../img/${hamster.imgName}`} />
+                                    <img src={`../img/${hamster.imgName}`}  alt={hamster.imgName}  />
                                     <ImageListItemBar
                                         title={hamster.name}
                                         subtitle={hamster.wins}
