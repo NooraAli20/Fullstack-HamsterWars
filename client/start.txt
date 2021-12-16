@@ -1,0 +1,8 @@
+    /*"start": "concurrently \"react-scripts start\" \"cd backend && nodemon server.js\"",*/
+
+let randoms = {...state.randomHamsters}
+            //console.log({"randoms" : current(state).randomHamsters})
+            const foundHamster = randoms.map(element => {
+                return (element.id === action!.payload) ? element.wins++ : element
+            }) ;
+            return {...state, randomHamsters : foundHamster};
