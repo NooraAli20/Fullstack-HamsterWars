@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import path from 'path';
-import helmet from 'helmet';
 import HamsterRouter from "./routes/hamster-routes.js";
 import MatchesRouter from "./routes/matches-routes.js";
 import ImagesRouter from './routes/images-routes.js';
@@ -36,12 +35,11 @@ app.use(cors({
     origin: '*'
 }))
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true })); 
+app.use(express.urlencoded());
+app.use(express.static('uploads'));
 
-app.use(express.json());
-
-
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 50000}));
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
