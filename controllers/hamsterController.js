@@ -160,11 +160,13 @@ export const getHamsterWithHighestWins = async(req, res, next) => {
         let allHamsters = [];
 
         await db.collection('hamsters')
+            .orderBy("wins", "desc")
+            .limit(1)
             .get()
             .then(document => {
                 document.forEach(x => {
                     let obj = x.data();
-                    allHamsters.push(obj)
+                    allHamsters.push(obj);
                 })
             });
         
@@ -172,24 +174,24 @@ export const getHamsterWithHighestWins = async(req, res, next) => {
         if(_.isEmpty(allHamsters))
             res.status(200).send(allHamsters);
         else
-        {
-            allHamsters.forEach(hamster => {
-                hamster['Rank'] = hamster.wins - hamster.defeats;
-            })
-    
-            const maxRank = Math.max.apply(Math, allHamsters.map(function(o) { return o.Rank; }));
-        
-            let winnersObject = [];
-    
-            for (let i = 0; i < allHamsters.length; i++) {
-                if(allHamsters[i].Rank === maxRank){
-                    winnersObject.push(allHamsters[i]);
-                }
-            }
-    
-            res.status(200).send(winnersObject);
-        }
+            res.status(200).send(allHamsters);
 
+    } catch (error) {
+        res.status(400).send(error.message);
+    }
+}
+
+export const resetHamsters = async(req, res, next) => {
+
+	try {
+        await db.collection('hamsters')
+            .get()
+            .then(document => {
+                document.forEach(doc => {
+                    doc.ref.update({ 'defeats' : 0, 'games' : 0, 'wins' : 0 })
+                })
+            });
+            res.status(200).send("Hamsters all reset");
     } catch (error) {
         res.status(400).send(error.message);
     }

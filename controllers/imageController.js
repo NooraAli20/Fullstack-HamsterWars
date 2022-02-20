@@ -1,5 +1,7 @@
 import { store } from '../db.js'
 import _ from 'lodash';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const bucket = store.bucket();
 
@@ -32,9 +34,6 @@ export const makeBucketPublic = async(req , res , next ) => {
             await bucket.makePrivate();
             res.status(200).send("Bucket make private")
         }
-            
-
-        
     } catch (error) {
         res.status(400).send(error.message);
     }
@@ -56,7 +55,7 @@ async function getSignedURL(fileName) {
 
 export const allImagesAndUrls = async(req, res, next ) => {
     try {
-        const [ files ] = await  bucket.getFiles();   
+        const [ files ] = await bucket.getFiles();   
         
         const allFiles = files.map(async (file) => {
             const links = await getSignedURL(file.name);
@@ -74,13 +73,20 @@ export const allImagesAndUrls = async(req, res, next ) => {
 
 export const uploadImage = async(req, res, next ) => {
     try {
+        const {originalname, filename} = req.file;
 
-        if (req.file == undefined) {
-            return res.status(400).send({ message: "Please upload a file!" });
-        }
-        res.status(200).send(req)
-        
+        let pathh = path.resolve('./uploads', filename);
+
+        bucket.upload(pathh, {
+            //destination : originalname,
+            metadata: {
+                cacheControl: 'public, max-age=31536000',
+            }
+        })
+
+        return res.status(200).send({filename});
     } catch (error) {
-        res.status(400).send(error.message);
+        res.status(400).send(`${error.message} : Nothing worked through`)
     }
 }
+
