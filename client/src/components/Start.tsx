@@ -13,6 +13,13 @@ const useStyles = makeStyles({
         },
         '& .MuiImageListItem-root' : {
             width : '30px',
+        },
+        '& .MuiGrid-root' : {
+            '& .MuiGrid-root' : {
+                '& .MuiImageListItem-img' : {
+                    width : '350px'
+                }
+            }
         }
     },
     typographyPriceFormatter : {
@@ -34,31 +41,27 @@ const Start : React.FC = () => {
     }
 
     return (
-
             <>
-                 <SideMenu />
-                 <Box className={classes.root} alignItems="center" justifyContent="center"> 
-                     <Grid container xs={12} item direction="column" alignItems="center" justifyContent="center" spacing={1}>
-                         <Grid xs={12} item  >
-                             <ImageListItem imageName={getImageLink(cutest.imgName)} name={cutest.name as string} />
-                         </Grid>
-                         <Grid xs={12} item>
-                             <Typography variant="h5" color="inherit" align= "center" gutterBottom >
-                                Previous Winner
-                             </Typography>
-                             <Typography variant="h6" color="primary" align= "justify" >
-                                 Name : { cutest.name}
-                             </Typography>
-                             <Typography variant="h6"color="primary" align= "justify" >
-                                 Rank : { cutest.Rank}
-                             </Typography>
-                             <Typography variant="h6" color="primary" align= "justify" gutterBottom>
-                                     Wins : { cutest.wins}
-                             </Typography>
-                         
-                         </Grid>
-                     </Grid>
-                 </Box>
+                <SideMenu />
+                <Box className={classes.root} alignItems="center" justifyContent="center"> 
+                    <Grid container xs={12} item direction="column" alignItems="center" justifyContent="center" spacing={1}>
+                        <Grid xs={12} item  justifyContent="center"  alignItems="center">
+                            <ImageListItem imageName={getImageLink(cutest.imgName)} name={cutest.name as string} />
+                        </Grid>
+                        <Grid xs={12} item justifyContent="center"  alignItems="center">
+                            <Typography variant="body1" color="inherit" align= "center" gutterBottom >
+                               Previous Winner
+                            </Typography>
+                            <Typography variant="body2" color="primary" align= "justify" >
+                                Name : { cutest.name}
+                            </Typography>
+                            <Typography variant="subtitle1" color="primary" align= "justify" gutterBottom>
+                                    Wins : { cutest.wins}
+                            </Typography>
+                        
+                        </Grid>
+                    </Grid>
+                </Box>
              </>
         )
 }

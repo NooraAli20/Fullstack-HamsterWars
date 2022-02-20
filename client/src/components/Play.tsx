@@ -1,35 +1,56 @@
 import { Grid, Typography,Button, Card, CardContent, 
-    CardMedia, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
-import React,{ } from 'react'
+    CardMedia, List, ListItem, ListItemIcon, ListItemText, CircularProgress } from '@mui/material';
+import React,{ useEffect } from 'react'
 import SideMenu from './SideMenu';
 import DriveFileRenameOutlineIcon from '@mui/icons-material/DriveFileRenameOutline';
 import WineBarIcon from '@mui/icons-material/WineBar';
 import { useAppDispatch, useAppSelector } from '../hooks';
-import { fetchRandomHamster, updateWinnerWins, updateHamsterMatch, fetchWinners, fetchLosers, refreshWinnersLosesList } from '../features/hamsterSlice';
+import { fetchRandomHamster, updateWinnerWins, updateHamsterMatch, refreshWinnersLosesList, fetchCutest } from '../features/hamsterSlice';
 import IMatch from '../interfaces/IMatch';
 
 const Play : React.FC = () => { 
+
+    useEffect(() => {
+        return () => {
+            clearTimeout(timer.current);
+        }
+    }, [])
+
 
     const dispatch = useAppDispatch();
 
     const rhs =  useAppSelector((state) => state.hamster.randomHamsters);
     const imgLib =  useAppSelector((state) => state.hamster.imagesLibrary);
+    const [loading, setLoading] = React.useState(false);
+    const [success, setSuccess] = React.useState(false);
+    const timer = React.useRef();
 
     const winnerClicked = (id : string) => {
-        dispatch(updateWinnerWins(id))
+        
+        if(!loading){
+            setSuccess(false);
+            setLoading(true);
+            dispatch(updateWinnerWins(id));
 
-        const loserId = rhs.find(x => { return x.id !== id})?.id;
+            const loserId = rhs.find(x => { return x.id !== id})?.id;
+    
+            const data : IMatch = {
+                winnerId : id,
+                loserId : loserId
+            }
+            dispatch(updateHamsterMatch(data));
 
-        const data : IMatch = {
-            winnerId : id,
-            loserId : loserId
+            setTimeout(() => {
+                dispatch(fetchRandomHamster());
+                dispatch(refreshWinnersLosesList);
+                setSuccess(true);
+                setLoading(false);
+                dispatch(fetchCutest());
+            }, 700)
         }
-        dispatch(updateHamsterMatch(data));
-
-        setTimeout(() => dispatch(fetchRandomHamster()), 500);
-        dispatch(refreshWinnersLosesList)
-        dispatch(fetchWinners());
-        dispatch(fetchLosers());
+        
+        /*dispatch(fetchWinners());
+        dispatch(fetchLosers());*/
     }
 
     const getImageLink = (fileName : string) => {
@@ -99,8 +120,12 @@ const Play : React.FC = () => {
                                 </Typography>
                             </Grid>
                         </Grid>
-                        <Grid xs={12} item style={{ marginBottom : "20px", marginTop : "50px" }}> 
-                            <Button variant="contained"  style={{ fontSize : "15px" }}> End</Button>
+                        
+                        <Grid xs={12} item style={{ marginTop : "2px" }}> 
+                        {loading && (
+                            <CircularProgress color="secondary" />
+                            )
+                        }
                         </Grid>
                     </Grid>
                 </>

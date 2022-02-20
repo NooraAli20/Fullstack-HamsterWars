@@ -43,7 +43,7 @@ const SideMenu : React.FC = () => {
                 <li><NavLink to='/play'>Play</NavLink></li>
                 <li><NavLink to='/gallery'>Gallery</NavLink></li>
                 <li><NavLink to='/stats'>Statistics</NavLink></li>
-                <li><NavLink to='/history'>History</NavLink></li>
+                
             </ul>
         </div>
     )

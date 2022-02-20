@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from 'axios';
+import { ImageListType } from "react-images-uploading";
 import {  HTTP_STATUS } from "../constants";
 import IMatch from "../interfaces/IMatch";
 
@@ -112,7 +113,59 @@ export const DeleteHamster = createAsyncThunk(
 export const updateHamsterMatch = createAsyncThunk(
     'hamster/updateHamsterMatch',
     async (data : IMatch) => {
-        await axios.post('/hamsters', data);
+        await axios.post('/matches', data);
+    }
+)
+
+export const uploadImageToStorage = createAsyncThunk(
+    'hamster/uploadImageToStorage',
+    async (data : ImageListType) => {
+        const metaData = data[0].data_url.split(";")[0].split(":")[1];
+        const imageName = data[0].file?.name as string;
+
+        const uploadedFileName = fetch(data[0].data_url)
+        .then(res => res.blob())
+        .then(blob => {
+            const file = new File([blob], imageName, { type: metaData })
+
+            const fileData = new FormData();
+            fileData.append('file', file, imageName);
+            fileData.append('metadata', metaData);
+            fileData.append('imageName', imageName);
+
+            const data = axios.post('/images/upload', 
+                fileData, {
+                    headers : {
+                        "Content-Disposition": `form-data; filename="${imageName}"`,
+                        'content-type': 'multipart/form-data'
+                    }
+                }
+            ).then(x => {
+                return x.data.filename;
+            }).catch(error => console.log(error));
+
+            return data;
+        });
+
+        return uploadedFileName;
+    }
+)
+
+interface INewHamster {
+    name : string;
+    age : number;
+    defeats : number;
+    wins : number;
+    games : number;
+    favFood : string;
+    loves : string;
+    imgName :string | undefined;
+}
+
+export const addNewHamster = createAsyncThunk(
+    'hamster/addNewHamster',
+    async (data : INewHamster) => {
+        return await axios.post('/hamsters', data);
     }
 )
 
@@ -133,6 +186,11 @@ export const hamsterSlice = createSlice({
         refreshWinnersLosesList : (state) => {
             state.winners = [];
             state.losers = []
+        },
+        updateAddedHamsterToAllHamsters : (state, action: PayloadAction<IHamster>) => {
+            const allHamsters = state.allHamsters;
+            allHamsters.push(action.payload)
+            state.allHamsters = allHamsters;
         }
     },
     extraReducers : (builder) => 
@@ -215,7 +273,7 @@ export const hamsterSlice = createSlice({
             .addCase(getAllHamsters.rejected, (state) => {
                 state.status =HTTP_STATUS.REJECTED;
             })
-            // get all hamsters
+            // Delete a hamster
             .addCase(DeleteHamster.pending, (state) => {
                 state.status = HTTP_STATUS.PENDING;
             })
@@ -225,7 +283,27 @@ export const hamsterSlice = createSlice({
             .addCase(DeleteHamster.rejected, (state) => {
                 state.status = HTTP_STATUS.REJECTED;
             })
+            // Add a new hamster
+            .addCase(addNewHamster.pending, (state) => {
+                state.status = HTTP_STATUS.PENDING;
+            })
+            .addCase(addNewHamster.fulfilled, (state, { payload }) => { 
+                state.status = HTTP_STATUS.FULFILLED;
+            })
+            .addCase(addNewHamster.rejected, (state) => {
+                state.status = HTTP_STATUS.REJECTED;
+            })
+            // Add a new hamster
+            .addCase(uploadImageToStorage.pending, (state) => {
+                state.status = HTTP_STATUS.PENDING;
+            })
+            .addCase(uploadImageToStorage.fulfilled, (state, { payload }) => { 
+                state.status = HTTP_STATUS.FULFILLED;
+            })
+            .addCase(uploadImageToStorage.rejected, (state) => {
+                state.status = HTTP_STATUS.REJECTED;
+            })
 })
 
-export const { updateWinnerWins, refreshWinnersLosesList, deleteHamsterFromState } = hamsterSlice.actions;
+export const { updateWinnerWins, refreshWinnersLosesList, deleteHamsterFromState, updateAddedHamsterToAllHamsters } = hamsterSlice.actions;
 export default hamsterSlice.reducer;

@@ -24,13 +24,16 @@ const Stats : React.FC  = () => {
 
     let winners = useAppSelector((state) => state.hamster.winners);
     let losers = useAppSelector((state) => state.hamster.losers);
+    const imgLib =  useAppSelector((state) => state.hamster.imagesLibrary);
+
+    const getImageLink = (fileName : string) => {
+        return imgLib.find(x => x.fileName === fileName)?.link
+    }
 
     useEffect(() => {
         dispatch(fetchWinners());
         dispatch(fetchLosers());
     }, [dispatch])
-
-    //console.log({ winners, losers })
 
     return (
         <>
@@ -45,7 +48,7 @@ const Stats : React.FC  = () => {
                         {
                             winners.map((hamster) => (
                                 <ImageListItem key={hamster.imgName}>
-                                    <img src={`../img/${hamster.imgName}`} alt={hamster.imgName} />
+                                    <img src={getImageLink(hamster.imgName ?? "")} alt={hamster.imgName} />
                                     <ImageListItemBar
                                         title={hamster.name}
                                         subtitle={hamster.wins}
@@ -65,7 +68,7 @@ const Stats : React.FC  = () => {
                         {
                             losers.map((hamster) => (
                                 <ImageListItem key={hamster.imgName}>
-                                    <img src={`../img/${hamster.imgName}`} alt={hamster.imgName} />
+                                    <img src={getImageLink(hamster.imgName ?? "")} alt={hamster.imgName} />
                                     <ImageListItemBar
                                         title={hamster.name}
                                         subtitle={hamster.defeats}

@@ -29,7 +29,7 @@ const ImageListItem : React.FC<Props> = ({ imageName }) => {
 
     return (
         <div className={classes.root}>
-            <img src={imageName} width="500px" loading="lazy" alt={imageName} />
+            <img src={imageName} width="350px" height="350px" loading="lazy" alt={imageName} />
         </div>
     )
 }
